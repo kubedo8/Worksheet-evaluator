@@ -6,9 +6,21 @@
 //  Copyright © 2018 Jakub Rodak. All rights reserved.
 //
 
-#ifndef marker_finder_hpp
-#define marker_finder_hpp
+#pragma once
 
 #include <stdio.h>
+#include "model.hpp"
 
-#endif /* marker_finder_hpp */
+using namespace std;
+
+class MarkerFinder {
+private:
+    ImageInfo imageInfo;
+    
+    Mat findHomographyForMarker(MarkerInfo, vector<KeyPoint>, Mat);
+    
+    void computePoints(Region, Mat, vector<RelatedPoint>);
+public:
+    MarkerFinder(ImageInfo);
+    vector<RelatedPoint> findRelatedPoints(Mat);
+};

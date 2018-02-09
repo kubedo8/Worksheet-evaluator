@@ -7,7 +7,11 @@
 //
 
 #include <stdio.h>
+#include <iostream>
+#include "model.hpp"
+
+using namespace std;
 
 int main(int argc, const char * argv[]) {
-    
+
 }
