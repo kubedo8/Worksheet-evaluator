@@ -1,8 +1,8 @@
 //
-//  model.h
+//  execution-context.hpp
 //  Test evaluator
 //
-//  Created by Jakub Rodak on 09/02/2018.
+//  Created by Jakub Rodak on 17/02/2018.
 //  Copyright © 2018 Jakub Rodak. All rights reserved.
 //
 
@@ -15,14 +15,6 @@
 using namespace cv;
 using namespace cv::xfeatures2d;
 using namespace std;
-
-class RelatedPoint{
-public:
-    Point original;
-    Point computed;
-    
-    RelatedPoint(Point, Point);
-};
 
 class Region {
 public:
@@ -39,11 +31,12 @@ public:
 
 class MarkerInfo {
 public:
+    int id;
     Region region;
     vector<KeyPoint> keyPoints;
     Mat descriptor;
     
-    MarkerInfo(Region, vector<KeyPoint>, Mat);
+    MarkerInfo(int, Region, vector<KeyPoint>, Mat);
 };
 
 class Evaluate{
@@ -60,13 +53,12 @@ public:
     EvaluateNumber(Region, int);
 };
 
-class ImageInfo {
-public:
+class ExecutionContext{
+private:
+    Mat worksheet;
     vector<MarkerInfo> markersInfo;
-    Size original;
-    Size resized;
-    
-    float scale();
-    
-    ImageInfo(vector<MarkerInfo>, Size, Size);
+public:
+    ExecutionContext(string);
+    Mat getWorksheet();
+    vector<MarkerInfo> getMarkersInfo();
 };

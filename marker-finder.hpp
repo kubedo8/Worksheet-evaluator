@@ -8,19 +8,38 @@
 
 #pragma once
 
+#include "execution-context.hpp"
+
 #include <stdio.h>
-#include "model.hpp"
 
 using namespace std;
 
+const double MAX_HEIGHT = 1200.0;
+
+class RelatedPoint{
+public:
+    Point original;
+    Point computed;
+    
+    RelatedPoint(Point, Point);
+};
+
+class MarkerRelatedPoints{
+public:
+    int markerId;
+    vector<RelatedPoint> points;
+    
+    MarkerRelatedPoints(int, vector<RelatedPoint>);
+};
+
 class MarkerFinder {
 private:
-    ImageInfo imageInfo;
+    ExecutionContext executionContext;
     
     Mat findHomographyForMarker(MarkerInfo, vector<KeyPoint>, Mat);
     
-    void computePoints(Region, Mat, vector<RelatedPoint>);
+    vector<RelatedPoint> computePoints(Region, Mat);
 public:
-    MarkerFinder(ImageInfo);
-    vector<RelatedPoint> findRelatedPoints(Mat);
+    MarkerFinder(ExecutionContext);
+    vector<MarkerRelatedPoints> findRelatedPoints(Mat);
 };

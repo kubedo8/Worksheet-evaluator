@@ -13,13 +13,23 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/calib3d.hpp"
 
-MarkerFinder::MarkerFinder(ImageInfo imageInfo): imageInfo(imageInfo){
-    MarkerFinder::imageInfo = imageInfo;
+RelatedPoint::RelatedPoint(Point p1, Point p2){
+    RelatedPoint::original = p1;
+    RelatedPoint::computed = p2;
 }
 
-vector<RelatedPoint> MarkerFinder::findRelatedPoints(Mat input){
+MarkerRelatedPoints::MarkerRelatedPoints(int id, vector<RelatedPoint> points){
+    MarkerRelatedPoints::markerId = id;
+    MarkerRelatedPoints::points = points;
+}
+
+MarkerFinder::MarkerFinder(ExecutionContext executionContext): executionContext(executionContext){
+    MarkerFinder::executionContext = executionContext;
+}
+
+vector<MarkerRelatedPoints> MarkerFinder::findRelatedPoints(Mat input){
     Mat inputResized;
-    double scale = input.rows / imageInfo.resized.height;
+    double scale = input.rows / MAX_HEIGHT;
     resize(input, inputResized, Size(input.cols / scale, input.rows / scale));
     
     Ptr<SURF> detector = SURF::create();
@@ -27,11 +37,13 @@ vector<RelatedPoint> MarkerFinder::findRelatedPoints(Mat input){
     Mat descriptor;
     detector->detectAndCompute(input, Mat(), keyPoints, descriptor);
     
-    vector<RelatedPoint> points;
     FlannBasedMatcher matcher;
     
-    for (int i = 0; i < imageInfo.markersInfo.size(); i++) {
-        MarkerInfo markerInfo = imageInfo.markersInfo[i];
+    vector<MarkerRelatedPoints> markerPoints;
+    
+    vector<MarkerInfo> markersInfo = executionContext.getMarkersInfo();
+    for (int i = 0; i < markersInfo.size(); i++) {
+        MarkerInfo markerInfo = markersInfo[i];
         
         Mat homography = findHomographyForMarker(markerInfo, keyPoints, descriptor);
         
@@ -39,10 +51,11 @@ vector<RelatedPoint> MarkerFinder::findRelatedPoints(Mat input){
             continue;
         }
         
-        computePoints(markerInfo.region, homography, points);
+        vector<RelatedPoint> points = computePoints(markerInfo.region, homography);
+        markerPoints.push_back(MarkerRelatedPoints(markerInfo.id, points));
     }
     
-    return points;
+    return markerPoints;
 }
 
 Mat MarkerFinder::findHomographyForMarker(MarkerInfo markerInfo, vector<KeyPoint> keyPoints, Mat descriptor){
@@ -74,8 +87,10 @@ Mat MarkerFinder::findHomographyForMarker(MarkerInfo markerInfo, vector<KeyPoint
     return findHomography(markerPts, inputMarkerPts, RANSAC);
 }
 
-void computePoints(Region region, Mat homography, vector<RelatedPoint> &points){
-    // TODO improvement: check if points is valid square shape
+vector<RelatedPoint> MarkerFinder::computePoints(Region region, Mat homography){
+    // TODO improvement: filter points - is valid square shape?
+    
+    vector<RelatedPoint> points;
     
     vector<Point> markerCorners(4);
     markerCorners[0] = cvPoint(0, 0);
@@ -96,5 +111,6 @@ void computePoints(Region region, Mat homography, vector<RelatedPoint> &points){
     
     Point originalBottomLeft = Point(region.x1, region.y2);
     points.push_back(RelatedPoint(originalBottomLeft, inputMarkerCorners[3]));
+    
+    return points;
 }
-
