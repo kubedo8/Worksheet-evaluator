@@ -14,7 +14,7 @@
 
 using namespace std;
 
-const double MAX_HEIGHT = 800.0;
+const double MAX_HEIGHT = 1000.0;
 
 class RelatedPoint{
 public:

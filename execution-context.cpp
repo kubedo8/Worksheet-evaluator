@@ -10,6 +10,7 @@
 
 #include <iostream>
 #include "opencv2/core.hpp"
+#include "opencv2/imgproc.hpp"
 #include "opencv2/xfeatures2d.hpp"
 #include "opencv2/highgui.hpp"
 
@@ -51,24 +52,26 @@ ExecutionContext::ExecutionContext(string modelPath){
     
     string imagePath = fs["imagePath"];
     worksheet = imread(imagePath);
+    double scale = worksheet.cols / 1000.0;
+    resize(worksheet, worksheet, Size(worksheet.cols / scale, worksheet.rows / scale));
     
-    initMarkers(fs);
-    initRegions(fs);
+    initMarkers(fs, scale);
+    initRegions(fs, scale);
 }
 
 Mat ExecutionContext::cropWorksheetByRegion(Region region){
     if (worksheet.empty()){
         return Mat();
     }
-    
-    Rect roi(region.x1, region.y1, region.width(), region.height());
+   
+    Rect roi(region.x1 , region.y1, region.width(), region.height());
     Mat imgRoi = worksheet(roi);
     Mat cropped;
     imgRoi.copyTo(cropped);
     return cropped;
 }
 
-void ExecutionContext::initMarkers(FileStorage fs){
+void ExecutionContext::initMarkers(FileStorage fs, double scale){
     FileNode markersNode = fs["markers"];
     
     Ptr<SURF> detector = SURF::create();
@@ -76,7 +79,7 @@ void ExecutionContext::initMarkers(FileStorage fs){
     for (FileNodeIterator markerIt = markersNode.begin(); markerIt != markersNode.end(); ++markerIt) {
         vector<int> coords;
         (*markerIt) >> coords;
-        Region region = Region(coords[0], coords[1], coords[2], coords[3]);
+        Region region = Region(coords[0]/ scale, coords[1]/ scale, coords[2]/ scale, coords[3]/ scale);
         
         Mat worksheetMarker = cropWorksheetByRegion(region);
         vector<KeyPoint> keyPoints;
@@ -89,7 +92,7 @@ void ExecutionContext::initMarkers(FileStorage fs){
     }
 }
 
-void ExecutionContext::initRegions(FileStorage fs){
+void ExecutionContext::initRegions(FileStorage fs, double scale){
     FileNode evalNode = fs["eval"];
     for (FileNodeIterator evalIt = evalNode.begin(); evalIt != evalNode.end(); ++evalIt) {
         int answer = (*evalIt)["answer"];

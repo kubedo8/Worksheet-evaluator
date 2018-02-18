@@ -37,8 +37,6 @@ vector<MarkerRelatedPoints> MarkerFinder::findRelatedPoints(Mat input){
     Mat descriptor;
     detector->detectAndCompute(inputResized, Mat(), keyPoints, descriptor);
     
-    FlannBasedMatcher matcher;
-    
     vector<MarkerRelatedPoints> markerPoints;
     
     vector<MarkerInfo> markersInfo = executionContext.getMarkersInfo();

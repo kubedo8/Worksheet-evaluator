@@ -62,8 +62,8 @@ private:
     vector<EvaluateNumber> evaluateRegions;
     
     Mat cropWorksheetByRegion(Region);
-    void initMarkers(FileStorage fs);
-    void initRegions(FileStorage fs);
+    void initMarkers(FileStorage, double);
+    void initRegions(FileStorage, double);
 public:
     ExecutionContext(string);
     Mat getWorksheet();
