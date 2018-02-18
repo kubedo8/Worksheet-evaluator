@@ -14,7 +14,7 @@
 
 using namespace std;
 
-const double MAX_HEIGHT = 1200.0;
+const double MAX_HEIGHT = 800.0;
 
 class RelatedPoint{
 public:
@@ -38,7 +38,7 @@ private:
     
     Mat findHomographyForMarker(MarkerInfo, vector<KeyPoint>, Mat);
     
-    vector<RelatedPoint> computePoints(Region, Mat);
+    vector<RelatedPoint> computePoints(Region, Mat, double);
 public:
     MarkerFinder(ExecutionContext);
     vector<MarkerRelatedPoints> findRelatedPoints(Mat);

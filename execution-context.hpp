@@ -12,6 +12,8 @@
 #include "opencv2/core.hpp"
 #include "opencv2/xfeatures2d.hpp"
 
+#include <fstream>
+
 using namespace cv;
 using namespace cv::xfeatures2d;
 using namespace std;
@@ -57,8 +59,14 @@ class ExecutionContext{
 private:
     Mat worksheet;
     vector<MarkerInfo> markersInfo;
+    vector<EvaluateNumber> evaluateRegions;
+    
+    Mat cropWorksheetByRegion(Region);
+    void initMarkers(FileStorage fs);
+    void initRegions(FileStorage fs);
 public:
     ExecutionContext(string);
     Mat getWorksheet();
     vector<MarkerInfo> getMarkersInfo();
+    vector<EvaluateNumber> gerEvaluateRegions();
 };

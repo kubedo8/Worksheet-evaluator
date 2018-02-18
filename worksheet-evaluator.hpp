@@ -6,9 +6,19 @@
 //  Copyright © 2018 Jakub Rodak. All rights reserved.
 //
 
-#ifndef test_evaluator_hpp
-#define test_evaluator_hpp
+#pragma once
 
-#include <stdio.h>
+#include "execution-context.hpp"
+#include "marker-finder.hpp"
 
-#endif /* test_evaluator_hpp */
+using namespace cv;
+
+
+class WorksheetEvaluator{
+private:
+    ExecutionContext executionContext;
+    MarkerFinder markerFinder;
+public:
+    WorksheetEvaluator(string);
+    void addFrame(Mat frame);
+};

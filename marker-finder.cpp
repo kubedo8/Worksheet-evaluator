@@ -35,7 +35,7 @@ vector<MarkerRelatedPoints> MarkerFinder::findRelatedPoints(Mat input){
     Ptr<SURF> detector = SURF::create();
     vector<KeyPoint> keyPoints;
     Mat descriptor;
-    detector->detectAndCompute(input, Mat(), keyPoints, descriptor);
+    detector->detectAndCompute(inputResized, Mat(), keyPoints, descriptor);
     
     FlannBasedMatcher matcher;
     
@@ -51,7 +51,7 @@ vector<MarkerRelatedPoints> MarkerFinder::findRelatedPoints(Mat input){
             continue;
         }
         
-        vector<RelatedPoint> points = computePoints(markerInfo.region, homography);
+        vector<RelatedPoint> points = computePoints(markerInfo.region, homography, scale);
         markerPoints.push_back(MarkerRelatedPoints(markerInfo.id, points));
     }
     
@@ -78,39 +78,38 @@ Mat MarkerFinder::findHomographyForMarker(MarkerInfo markerInfo, vector<KeyPoint
     
     vector<Point2f> markerPts;
     vector<Point2f> inputMarkerPts;
-    for( size_t i = 0; i < good_matches.size(); i++ )
-    {
+    for( size_t i = 0; i < good_matches.size(); i++ ){
         //-- Get the keypoints from the good matches
-        markerPts.push_back( markerInfo.keyPoints[ good_matches[i].queryIdx ].pt );
-        inputMarkerPts.push_back( keyPoints[ good_matches[i].trainIdx ].pt );
+        markerPts.push_back(markerInfo.keyPoints[ good_matches[i].queryIdx ].pt);
+        inputMarkerPts.push_back(keyPoints[ good_matches[i].trainIdx ].pt);
     }
     return findHomography(markerPts, inputMarkerPts, RANSAC);
 }
 
-vector<RelatedPoint> MarkerFinder::computePoints(Region region, Mat homography){
+vector<RelatedPoint> MarkerFinder::computePoints(Region region, Mat homography, double scale){
     // TODO improvement: filter points - is valid square shape?
     
     vector<RelatedPoint> points;
     
-    vector<Point> markerCorners(4);
+    vector<Point2f> markerCorners(4);
     markerCorners[0] = cvPoint(0, 0);
     markerCorners[1] = cvPoint(region.width(), 0);
     markerCorners[2] = cvPoint(region.width(), region.height());
     markerCorners[3] = cvPoint(0, region.height());
-    vector<Point> inputMarkerCorners(4);
+    vector<Point2f> inputMarkerCorners(4);
     perspectiveTransform(markerCorners, inputMarkerCorners, homography);
     
     Point originalTopLeft = Point(region.x1, region.y1);
-    points.push_back(RelatedPoint(originalTopLeft, inputMarkerCorners[0]));
+    points.push_back(RelatedPoint(originalTopLeft, inputMarkerCorners[0] * scale));
     
     Point originalTopRight = Point(region.x2, region.y1);
-    points.push_back(RelatedPoint(originalTopRight, inputMarkerCorners[1]));
+    points.push_back(RelatedPoint(originalTopRight, inputMarkerCorners[1] * scale));
     
     Point originalBottomRight = Point(region.x2, region.y2);
-    points.push_back(RelatedPoint(originalBottomRight, inputMarkerCorners[2]));
+    points.push_back(RelatedPoint(originalBottomRight, inputMarkerCorners[2] * scale));
     
     Point originalBottomLeft = Point(region.x1, region.y2);
-    points.push_back(RelatedPoint(originalBottomLeft, inputMarkerCorners[3]));
+    points.push_back(RelatedPoint(originalBottomLeft, inputMarkerCorners[3] * scale));
     
     return points;
 }
