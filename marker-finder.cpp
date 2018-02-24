@@ -13,16 +13,6 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/calib3d.hpp"
 
-RelatedPoint::RelatedPoint(Point p1, Point p2){
-    RelatedPoint::original = p1;
-    RelatedPoint::computed = p2;
-}
-
-MarkerRelatedPoints::MarkerRelatedPoints(int id, vector<RelatedPoint> points){
-    MarkerRelatedPoints::markerId = id;
-    MarkerRelatedPoints::points = points;
-}
-
 MarkerFinder::MarkerFinder(ExecutionContext executionContext): executionContext(executionContext){
     MarkerFinder::executionContext = executionContext;
 }
@@ -35,6 +25,7 @@ vector<MarkerRelatedPoints> MarkerFinder::findRelatedPoints(Mat input){
     Ptr<SURF> detector = SURF::create();
     vector<KeyPoint> keyPoints;
     Mat descriptor;
+    
     detector->detectAndCompute(inputResized, Mat(), keyPoints, descriptor);
     
     vector<MarkerRelatedPoints> markerPoints;
@@ -49,7 +40,7 @@ vector<MarkerRelatedPoints> MarkerFinder::findRelatedPoints(Mat input){
             continue;
         }
         
-        vector<RelatedPoint> points = computePoints(markerInfo.region, homography, scale);
+        vector<RelatedPoint> points = computePoints(markerInfo.points, homography, scale);
         markerPoints.push_back(MarkerRelatedPoints(markerInfo.id, points));
     }
     
@@ -84,30 +75,26 @@ Mat MarkerFinder::findHomographyForMarker(MarkerInfo markerInfo, vector<KeyPoint
     return findHomography(markerPts, inputMarkerPts, RANSAC);
 }
 
-vector<RelatedPoint> MarkerFinder::computePoints(Region region, Mat homography, double scale){
+vector<RelatedPoint> MarkerFinder::computePoints(Point2f markerPoints[4], Mat homography, double scale){
     // TODO improvement: filter points - is valid square shape?
+    
+    RotatedRect rotatedRect(markerPoints[0], markerPoints[1], markerPoints[2]);
+    Size size = rotatedRect.size;
     
     vector<RelatedPoint> points;
     
     vector<Point2f> markerCorners(4);
     markerCorners[0] = cvPoint(0, 0);
-    markerCorners[1] = cvPoint(region.width(), 0);
-    markerCorners[2] = cvPoint(region.width(), region.height());
-    markerCorners[3] = cvPoint(0, region.height());
+    markerCorners[1] = cvPoint(size.width, 0);
+    markerCorners[2] = cvPoint(size.width, size.height);
+    markerCorners[3] = cvPoint(0, size.height);
     vector<Point2f> inputMarkerCorners(4);
     perspectiveTransform(markerCorners, inputMarkerCorners, homography);
     
-    Point originalTopLeft = Point(region.x1, region.y1);
-    points.push_back(RelatedPoint(originalTopLeft, inputMarkerCorners[0] * scale));
-    
-    Point originalTopRight = Point(region.x2, region.y1);
-    points.push_back(RelatedPoint(originalTopRight, inputMarkerCorners[1] * scale));
-    
-    Point originalBottomRight = Point(region.x2, region.y2);
-    points.push_back(RelatedPoint(originalBottomRight, inputMarkerCorners[2] * scale));
-    
-    Point originalBottomLeft = Point(region.x1, region.y2);
-    points.push_back(RelatedPoint(originalBottomLeft, inputMarkerCorners[3] * scale));
+    points.push_back(RelatedPoint(markerPoints[0], inputMarkerCorners[0] * scale));
+    points.push_back(RelatedPoint(markerPoints[1], inputMarkerCorners[1] * scale));
+    points.push_back(RelatedPoint(markerPoints[2], inputMarkerCorners[2] * scale));
+    points.push_back(RelatedPoint(markerPoints[3], inputMarkerCorners[3] * scale));
     
     return points;
 }

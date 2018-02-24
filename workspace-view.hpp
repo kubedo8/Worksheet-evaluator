@@ -6,9 +6,25 @@
 //  Copyright © 2018 Jakub Rodak. All rights reserved.
 //
 
-#ifndef workspace_view_hpp
-#define workspace_view_hpp
+#pragma once
+
+#include "execution-context.hpp"
 
 #include <stdio.h>
 
-#endif /* workspace_view_hpp */
+using namespace std;
+
+class WorkspaceView{
+private:
+    ExecutionContext executionContext;
+    
+    vector<Point2f> getRectCorners(Rect);
+public:
+    WorkspaceView(ExecutionContext);
+    
+    void addFrame(Mat, Mat);
+    
+    vector<EvaluateRect> getNewRegions();
+    
+    vector<EvaluateRect> getAllRegions();
+};

@@ -18,55 +18,67 @@ using namespace cv;
 using namespace cv::xfeatures2d;
 using namespace std;
 
-class Region {
-public:
-    float x1;
-    float y1;
-    float x2;
-    float y2;
-    
-    float width();
-    float height();
-    
-    Region(float, float, float, float);
-};
-
 class MarkerInfo {
 public:
     int id;
-    Region region;
+    Point2f points[4];
     vector<KeyPoint> keyPoints;
     Mat descriptor;
     
-    MarkerInfo(int, Region, vector<KeyPoint>, Mat);
+    MarkerInfo(int, Point2f[4], vector<KeyPoint>, Mat);
+};
+
+class RelatedPoint{
+public:
+    Point2f original;
+    Point2f computed;
+    
+    RelatedPoint(Point2f, Point2f);
+};
+
+class MarkerRelatedPoints{
+public:
+    int markerId;
+    vector<RelatedPoint> points;
+    
+    MarkerRelatedPoints(int, vector<RelatedPoint>);
 };
 
 class Evaluate{
 public:
-    Region region;
+    int id;
+    Rect rect;
     
-    Evaluate(Region);
+    Evaluate(int, Rect);
 };
 
 class EvaluateNumber: public Evaluate {
 public:
     int answer;
     
-    EvaluateNumber(Region, int);
+    EvaluateNumber(int, Rect, int);
+};
+
+class EvaluateRect{
+public:
+    int evaluateId;
+    Mat rectMatrix;
+    
+    EvaluateRect(int, Mat);
 };
 
 class ExecutionContext{
 private:
     Mat worksheet;
     vector<MarkerInfo> markersInfo;
-    vector<EvaluateNumber> evaluateRegions;
+    vector<Evaluate> evaluateRects;
     
-    Mat cropWorksheetByRegion(Region);
+    Mat cropWorksheetByPoints(Point2f[4]);
     void initMarkers(FileStorage, double);
-    void initRegions(FileStorage, double);
+    void initEvaluateRects(FileStorage, double);
 public:
     ExecutionContext(string);
     Mat getWorksheet();
     vector<MarkerInfo> getMarkersInfo();
-    vector<EvaluateNumber> gerEvaluateRegions();
+    vector<Evaluate> gerEvaluateRects();
 };

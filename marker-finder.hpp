@@ -14,23 +14,7 @@
 
 using namespace std;
 
-const double MAX_HEIGHT = 1000.0;
-
-class RelatedPoint{
-public:
-    Point original;
-    Point computed;
-    
-    RelatedPoint(Point, Point);
-};
-
-class MarkerRelatedPoints{
-public:
-    int markerId;
-    vector<RelatedPoint> points;
-    
-    MarkerRelatedPoints(int, vector<RelatedPoint>);
-};
+const double MAX_HEIGHT = 1500.0;
 
 class MarkerFinder {
 private:
@@ -38,7 +22,7 @@ private:
     
     Mat findHomographyForMarker(MarkerInfo, vector<KeyPoint>, Mat);
     
-    vector<RelatedPoint> computePoints(Region, Mat, double);
+    vector<RelatedPoint> computePoints(Point2f[4], Mat, double);
 public:
     MarkerFinder(ExecutionContext);
     vector<MarkerRelatedPoints> findRelatedPoints(Mat);

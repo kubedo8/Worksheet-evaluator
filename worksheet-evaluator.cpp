@@ -15,11 +15,11 @@
 
 using namespace std;
 
-WorksheetEvaluator::WorksheetEvaluator(string modelPath): executionContext(modelPath), markerFinder(executionContext){
+WorksheetEvaluator::WorksheetEvaluator(string modelPath): executionContext(modelPath), markerFinder(executionContext), aligner(executionContext){
 }
 
-void WorksheetEvaluator::addFrame(Mat image){
-    vector<MarkerRelatedPoints> markerPoints = markerFinder.findRelatedPoints(image);
+void WorksheetEvaluator::addFrame(Mat frame){
+    vector<MarkerRelatedPoints> markerPoints = markerFinder.findRelatedPoints(frame);
     
     vector<Scalar> colors;
     colors.push_back(Scalar(255,0,0));
@@ -35,14 +35,15 @@ void WorksheetEvaluator::addFrame(Mat image){
         for (int j = 0; j < mrp.points.size(); j++) {
             RelatedPoint rp = mrp.points[j];
             cout << rp.original << " " << rp.computed << endl;
-            circle(image, rp.computed, 30, color);
+            circle(frame, rp.computed, 30, color);
         }
     }
+    imwrite("/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/debug/result.jpg", frame);
     
-    Mat imgResized;
-    double scale = image.rows / 1150;
-    resize(image, imgResized, Size(image.cols / scale, image.rows / scale));
+    Mat homography = aligner.findImageHomography(markerPoints);
     
-    imshow("image", imgResized);
-    waitKey();
+    if (homography.empty()){
+        cerr << "Hmography not found on frame!" << endl;
+        return; // TODO throw error?
+    }
 }

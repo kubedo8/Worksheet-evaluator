@@ -6,9 +6,22 @@
 //  Copyright © 2018 Jakub Rodak. All rights reserved.
 //
 
-#ifndef aligner_hpp
-#define aligner_hpp
+#pragma once
+
+#include "execution-context.hpp"
 
 #include <stdio.h>
 
-#endif /* aligner_hpp */
+using namespace std;
+
+class Aligner{
+private:
+    ExecutionContext executionContext;
+    
+    void convertMarkerRelatedPointsToPoints(vector<MarkerRelatedPoints>, vector<Point2f>&, vector<Point2f>&);
+    
+public:
+    Aligner(ExecutionContext);
+    
+    Mat findImageHomography(vector<MarkerRelatedPoints>);
+};

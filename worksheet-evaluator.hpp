@@ -10,6 +10,7 @@
 
 #include "execution-context.hpp"
 #include "marker-finder.hpp"
+#include "aligner.hpp"
 
 using namespace cv;
 
@@ -18,6 +19,7 @@ class WorksheetEvaluator{
 private:
     ExecutionContext executionContext;
     MarkerFinder markerFinder;
+    Aligner aligner;
 public:
     WorksheetEvaluator(string);
     void addFrame(Mat frame);
