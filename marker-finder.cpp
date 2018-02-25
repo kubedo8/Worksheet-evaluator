@@ -72,7 +72,7 @@ Mat MarkerFinder::findHomographyForMarker(MarkerInfo markerInfo, vector<KeyPoint
     
     vector<Point2f> markerPts;
     vector<Point2f> inputMarkerPts;
-    for( size_t i = 0; i < good_matches.size(); i++ ){
+    for( int i = 0; i < good_matches.size(); i++ ){
         //-- Get the keypoints from the good matches
         markerPts.push_back(markerInfo.keyPoints[ good_matches[i].queryIdx ].pt);
         inputMarkerPts.push_back(keyPoints[ good_matches[i].trainIdx ].pt);
@@ -81,8 +81,6 @@ Mat MarkerFinder::findHomographyForMarker(MarkerInfo markerInfo, vector<KeyPoint
 }
 
 vector<RelatedPoint> MarkerFinder::computePoints(Point2f markerPoints[4], Mat homography, double scale){
-    // TODO improvement: filter points - is valid square shape?
-    
     RotatedRect rotatedRect(markerPoints[0], markerPoints[1], markerPoints[2]);
     Size size = rotatedRect.size;
     
@@ -126,7 +124,7 @@ bool MarkerFinder::validRectangle(vector<Point2f> points) {
     float angle1 = calculateAngle(points[0], points[1], points[2]);
     float angle2 = calculateAngle(points[1], points[2], points[3]);
     float angle3 = calculateAngle(points[2], points[3], points[0]);
-    float angle4 = calculateAngle(points[3], points[0], points[2]);
+    float angle4 = calculateAngle(points[3], points[0], points[1]);
     
     if(angle1 < MIN_RECTANGLE_ANGLE || angle1 > MAX_RECTANGLE_ANGLE || angle2 < MIN_RECTANGLE_ANGLE || angle2 > MAX_RECTANGLE_ANGLE ||
        angle3 < MIN_RECTANGLE_ANGLE || angle3 > MAX_RECTANGLE_ANGLE || angle4 < MIN_RECTANGLE_ANGLE || angle4 > MAX_RECTANGLE_ANGLE){

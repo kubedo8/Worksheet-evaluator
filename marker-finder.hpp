@@ -15,7 +15,7 @@
 using namespace std;
 
 const double MAX_HEIGHT = 1500.0;
-const double MIN_MARKER_SIZE = 100.0;
+const double MIN_MARKER_SIZE = 50.0;
 const double MIN_RECTANGLE_ANGLE = 75.0;
 const double MAX_RECTANGLE_ANGLE = 105.0;
 

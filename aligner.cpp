@@ -27,7 +27,7 @@ Mat Aligner::findImageHomography(vector<MarkerRelatedPoints> markerPoints) {
     vector<Point2f> framePoints;
     convertMarkerRelatedPointsToPoints(markerPoints, worksheetPoints, framePoints);
     
-    return findHomography(worksheetPoints, framePoints, RANSAC);
+    return findHomography(worksheetPoints, framePoints, 0);
 }
 
 void Aligner::convertMarkerRelatedPointsToPoints(vector<MarkerRelatedPoints> markerPoints, vector<Point2f> &worksheetPoints, vector<Point2f> &framePoints){

@@ -21,25 +21,6 @@ WorksheetEvaluator::WorksheetEvaluator(string modelPath): executionContext(model
 void WorksheetEvaluator::addFrame(Mat frame){
     vector<MarkerRelatedPoints> markerPoints = markerFinder.findRelatedPoints(frame);
     
-    vector<Scalar> colors;
-    colors.push_back(Scalar(255,0,0));
-    colors.push_back(Scalar(0,255,0));
-    colors.push_back(Scalar(0,0,255));
-    colors.push_back(Scalar(100,20,80));
-    
-    for (int i = 0; i < markerPoints.size(); i++) {
-        MarkerRelatedPoints mrp = markerPoints[i];
-        cout << mrp.markerId << endl;
-        
-        Scalar color = colors[i];
-        for (int j = 0; j < mrp.points.size(); j++) {
-            RelatedPoint rp = mrp.points[j];
-            cout << rp.original << " " << rp.computed << endl;
-            circle(frame, rp.computed, 30, color);
-        }
-    }
-    imwrite("/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/debug/result.jpg", frame);
-    
     Mat homography = aligner.findImageHomography(markerPoints);
     
     if (homography.empty()){
