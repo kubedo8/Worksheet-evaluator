@@ -15,7 +15,7 @@
 
 using namespace std;
 
-WorksheetEvaluator::WorksheetEvaluator(string modelPath): executionContext(modelPath), markerFinder(executionContext), aligner(executionContext){
+WorksheetEvaluator::WorksheetEvaluator(string modelPath): executionContext(modelPath), markerFinder(executionContext), aligner(executionContext), workspaceView(executionContext){
 }
 
 void WorksheetEvaluator::addFrame(Mat frame){
@@ -46,4 +46,6 @@ void WorksheetEvaluator::addFrame(Mat frame){
         cerr << "Hmography not found on frame!" << endl;
         return; // TODO throw error?
     }
+    
+    workspaceView.addFrame(frame, homography);
 }

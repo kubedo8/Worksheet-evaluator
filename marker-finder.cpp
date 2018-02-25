@@ -12,6 +12,9 @@
 #include "opencv2/xfeatures2d.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/calib3d.hpp"
+#include <iostream>
+
+using namespace std;
 
 MarkerFinder::MarkerFinder(ExecutionContext executionContext): executionContext(executionContext){
     MarkerFinder::executionContext = executionContext;
@@ -41,7 +44,9 @@ vector<MarkerRelatedPoints> MarkerFinder::findRelatedPoints(Mat input){
         }
         
         vector<RelatedPoint> points = computePoints(markerInfo.points, homography, scale);
-        markerPoints.push_back(MarkerRelatedPoints(markerInfo.id, points));
+        if (!points.empty()) {
+            markerPoints.push_back(MarkerRelatedPoints(markerInfo.id, points));
+        }
     }
     
     return markerPoints;
@@ -91,10 +96,54 @@ vector<RelatedPoint> MarkerFinder::computePoints(Point2f markerPoints[4], Mat ho
     vector<Point2f> inputMarkerCorners(4);
     perspectiveTransform(markerCorners, inputMarkerCorners, homography);
     
-    points.push_back(RelatedPoint(markerPoints[0], inputMarkerCorners[0] * scale));
-    points.push_back(RelatedPoint(markerPoints[1], inputMarkerCorners[1] * scale));
-    points.push_back(RelatedPoint(markerPoints[2], inputMarkerCorners[2] * scale));
-    points.push_back(RelatedPoint(markerPoints[3], inputMarkerCorners[3] * scale));
+    for (int i = 0; i < 4; i++) {
+        inputMarkerCorners[i] *= scale;
+    }
+    
+    if (validRectangle(inputMarkerCorners)){
+        points.push_back(RelatedPoint(markerPoints[0], inputMarkerCorners[0]));
+        points.push_back(RelatedPoint(markerPoints[1], inputMarkerCorners[1]));
+        points.push_back(RelatedPoint(markerPoints[2], inputMarkerCorners[2]));
+        points.push_back(RelatedPoint(markerPoints[3], inputMarkerCorners[3]));
+    }
     
     return points;
+}
+
+bool MarkerFinder::validRectangle(vector<Point2f> points) {
+    if(points.size() != 4){
+        return false;
+    }
+    double dist1 = norm(points[0] - points[1]);
+    double dist2 = norm(points[1] - points[2]);
+    double dist3 = norm(points[2] - points[3]);
+    double dist4 = norm(points[3] - points[0]);
+    
+    if(dist1 < MIN_MARKER_SIZE || dist2 < MIN_MARKER_SIZE || dist3 < MIN_MARKER_SIZE || dist4 < MIN_MARKER_SIZE){
+        return false;
+    }
+    
+    float angle1 = calculateAngle(points[0], points[1], points[2]);
+    float angle2 = calculateAngle(points[1], points[2], points[3]);
+    float angle3 = calculateAngle(points[2], points[3], points[0]);
+    float angle4 = calculateAngle(points[3], points[0], points[2]);
+    
+    if(angle1 < MIN_RECTANGLE_ANGLE || angle1 > MAX_RECTANGLE_ANGLE || angle2 < MIN_RECTANGLE_ANGLE || angle2 > MAX_RECTANGLE_ANGLE ||
+       angle3 < MIN_RECTANGLE_ANGLE || angle3 > MAX_RECTANGLE_ANGLE || angle4 < MIN_RECTANGLE_ANGLE || angle4 > MAX_RECTANGLE_ANGLE){
+        return false;
+    }
+    
+    return true;
+}
+
+float MarkerFinder::calculateAngle(Point2f a, Point2f b, Point2f c){
+    Point2f ab = { b.x - a.x, b.y - a.y };
+    Point2f cb = { b.x - c.x, b.y - c.y };
+    
+    float dot = (ab.x * cb.x + ab.y * cb.y); // dot product
+    float cross = (ab.x * cb.y - ab.y * cb.x); // cross product
+    
+    float alpha = atan2(cross, dot);
+    
+    return abs(alpha * 180. / M_PI + 0.5);
 }

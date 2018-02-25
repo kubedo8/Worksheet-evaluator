@@ -15,6 +15,9 @@
 using namespace std;
 
 const double MAX_HEIGHT = 1500.0;
+const double MIN_MARKER_SIZE = 100.0;
+const double MIN_RECTANGLE_ANGLE = 75.0;
+const double MAX_RECTANGLE_ANGLE = 105.0;
 
 class MarkerFinder {
 private:
@@ -23,6 +26,10 @@ private:
     Mat findHomographyForMarker(MarkerInfo, vector<KeyPoint>, Mat);
     
     vector<RelatedPoint> computePoints(Point2f[4], Mat, double);
+    
+    bool validRectangle(vector<Point2f>);
+    
+    float calculateAngle(Point2f, Point2f, Point2f);
 public:
     MarkerFinder(ExecutionContext);
     vector<MarkerRelatedPoints> findRelatedPoints(Mat);

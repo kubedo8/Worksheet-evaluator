@@ -11,6 +11,7 @@
 #include "execution-context.hpp"
 #include "marker-finder.hpp"
 #include "aligner.hpp"
+#include "workspace-view.hpp"
 
 using namespace cv;
 
@@ -20,6 +21,7 @@ private:
     ExecutionContext executionContext;
     MarkerFinder markerFinder;
     Aligner aligner;
+    WorkspaceView workspaceView;
 public:
     WorksheetEvaluator(string);
     void addFrame(Mat frame);

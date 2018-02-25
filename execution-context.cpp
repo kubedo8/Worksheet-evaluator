@@ -69,7 +69,6 @@ Mat ExecutionContext::cropWorksheetByPoints(Point2f points[4]){
    
     RotatedRect rect(points[0], points[1], points[2]);
     
-    cout << rect.size << endl;
     // matrices we'll use
     Mat M, rotated, cropped;
     // get angle and size from the bounding box
@@ -86,10 +85,6 @@ Mat ExecutionContext::cropWorksheetByPoints(Point2f points[4]){
     warpAffine(worksheet, rotated, M, worksheet.size(), INTER_CUBIC);
     // crop the resulting image
     getRectSubPix(rotated, rect_size, rect.center, cropped);
-    
-    imshow("marker", cropped);
-    waitKey();
-    
     return cropped;
 }
 
@@ -124,13 +119,13 @@ void ExecutionContext::initEvaluateRects(FileStorage fs, double scale){
     int id = 1;
     for (FileNodeIterator evalIt = evalNode.begin(); evalIt != evalNode.end(); ++evalIt) {
         int answer = (*evalIt)["answer"];
-        vector<int> coords;
+        vector<float> coords;
         (*evalIt)["pos"] >> coords;
         Rect rect;
-        rect.x = coords[0];
-        rect.y = coords[1];
-        rect.width = coords[2] - coords[0];
-        rect.height = coords[3] - coords[1];
+        rect.x = coords[0] / scale;
+        rect.y = coords[1] / scale;
+        rect.width = (coords[2] / scale) - rect.x;
+        rect.height = (coords[3] / scale) - rect.y;
         
         evaluateRects.push_back(EvaluateNumber(id, rect, answer));
         
