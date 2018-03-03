@@ -50,6 +50,11 @@ EvaluateRect::EvaluateRect(int evaluateId, Mat rectMatrix){
     EvaluateRect::rectMatrix = rectMatrix;
 }
 
+VisibleEvaluate::VisibleEvaluate(int evaluateId, vector<Point2f> points){
+    VisibleEvaluate::evaluateId = evaluateId;
+    VisibleEvaluate::points = points;
+}
+
 ExecutionContext::ExecutionContext(string modelPath){
     FileStorage fs(modelPath, FileStorage::READ);
     
@@ -110,7 +115,6 @@ void ExecutionContext::initMarkers(FileStorage fs, double scale){
         detector->detectAndCompute(worksheetMarker, Mat(), keyPoints, descriptor);
         
         markersInfo.push_back(MarkerInfo(id, points, keyPoints, descriptor));
-    
     }
 }
 

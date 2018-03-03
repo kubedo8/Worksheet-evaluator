@@ -14,17 +14,30 @@
 
 using namespace std;
 
+const double RATIO = 0.8;
+
 class WorkspaceView{
 private:
     ExecutionContext executionContext;
     
+    vector<EvaluateRect> newRects;
+    
+    vector<EvaluateRect> allRects;
+    
     vector<Point2f> getRectCorners(Rect);
+    
+    bool matContainsPoints(Mat, vector<Point2f>);
+    
+    void processRect(int, Mat);
+    
+    EvaluateRect* getRectById(int);
+    
 public:
     WorkspaceView(ExecutionContext);
     
-    void addFrame(Mat, Mat);
+    vector<VisibleEvaluate> addFrame(Mat, Mat);
     
-    vector<EvaluateRect> getNewRegions();
+    vector<EvaluateRect> getNewRects();
     
-    vector<EvaluateRect> getAllRegions();
+    vector<EvaluateRect> getAllRects();
 };

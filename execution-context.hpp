@@ -67,6 +67,14 @@ public:
     EvaluateRect(int, Mat);
 };
 
+class VisibleEvaluate{
+public:
+    int evaluateId;
+    vector<Point2f> points;
+    
+    VisibleEvaluate(int, vector<Point2f>);
+};
+
 class ExecutionContext{
 private:
     Mat worksheet;

@@ -46,13 +46,15 @@ void processVideo(WorksheetEvaluator we){
 }
 
 void processImage(WorksheetEvaluator we){
-    Mat frame = imread("/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/data/image103.jpg");
+    Mat frame = imread("/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/data/image101.jpg");
+    we.addFrame(frame);
+    
     imwrite("/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/debug/corners.jpg", frame);
 }
 
 int main(int argc, const char * argv[]) {
     WorksheetEvaluator we("/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/data/model101.yml");
     
-   // processVideo(we);
+    //processVideo(we);
     processImage(we);
 }

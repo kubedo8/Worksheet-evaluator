@@ -28,5 +28,5 @@ void WorksheetEvaluator::addFrame(Mat frame){
         return; // TODO throw error?
     }
     
-    workspaceView.addFrame(frame, homography);
+    vector<VisibleEvaluate> visibleEvalutes = workspaceView.addFrame(frame, homography);
 }
