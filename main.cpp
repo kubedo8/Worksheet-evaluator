@@ -46,7 +46,7 @@ void processVideo(WorksheetEvaluator we){
 }
 
 void processImage(WorksheetEvaluator we){
-    Mat frame = imread("/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/data/image101.jpg");
+    Mat frame = imread("/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/data/image102.jpg");
     we.addFrame(frame);
     
     imwrite("/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/debug/corners.jpg", frame);

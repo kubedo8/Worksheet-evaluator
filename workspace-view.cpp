@@ -20,7 +20,7 @@ WorkspaceView::WorkspaceView(ExecutionContext executionContext): executionContex
 
 vector<VisibleEvaluate> WorkspaceView::addFrame(Mat frame, Mat homography){
     vector<Evaluate> evaluateRects = executionContext.gerEvaluateRects();
-    double scale = max(1.0, (frame.rows * 1.0) / 2.0 / (executionContext.getWorksheet().rows * 1.0));
+    double scale = max(1.0, (frame.rows * 1.0) / (executionContext.getWorksheet().rows * 1.0));
     
     vector<VisibleEvaluate> visibleEvaluates;
     
@@ -36,7 +36,7 @@ vector<VisibleEvaluate> WorkspaceView::addFrame(Mat frame, Mat homography){
             continue;
         }
         
-        visibleEvaluates.push_back(VisibleEvaluate(evaluateRects[i].id, computedCorners));
+        visibleEvaluates.push_back(VisibleEvaluate(evaluateRects[i].evaluateId, computedCorners));
         
         Size2f cropSize = Size2f(rect.width * scale, rect.height * scale);
         
@@ -51,24 +51,21 @@ vector<VisibleEvaluate> WorkspaceView::addFrame(Mat frame, Mat homography){
         Mat cropped;
         warpPerspective(frame, cropped, perspectiveTransform, cropSize);
         
-        processRect(evaluateRects[i].id, cropped);
+        processRect(evaluateRects[i].evaluateId, cropped);
     }
     
     return visibleEvaluates;
 }
 
 void WorkspaceView::processRect(int id, Mat rect){
-    Mat gray;
-    cvtColor(rect, gray, CV_RGB2GRAY);
-    
     EvaluateRect* evaluateRect = getRectById(id);
     
     if (evaluateRect != NULL){
         Mat currentMatrix = evaluateRect->rectMatrix;
-        Mat newMatrix = RATIO * currentMatrix + (1 - RATIO) * gray;
+        Mat newMatrix = RATIO * currentMatrix + (1 - RATIO) * rect;
         evaluateRect->rectMatrix = newMatrix;
     }else{
-        EvaluateRect newRect(id, gray);
+        EvaluateRect newRect(id, rect);
         allRects.push_back(newRect);
         newRects.push_back(newRect);
     }

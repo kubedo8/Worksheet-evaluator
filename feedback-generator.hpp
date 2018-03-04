@@ -6,9 +6,19 @@
 //  Copyright © 2018 Jakub Rodak. All rights reserved.
 //
 
-#ifndef feedback_generator_hpp
-#define feedback_generator_hpp
+#pragma once
 
-#include <stdio.h>
+#include "execution-context.hpp"
 
-#endif /* feedback_generator_hpp */
+class FeedbackGenerator{
+private:
+    ExecutionContext executionContext;
+    
+    void drawLines(Mat, vector<Point2f>, Scalar);
+    
+    Scalar getColorForAnswerType(int);
+public:
+    FeedbackGenerator(ExecutionContext);
+    
+    void drawResult(Mat, vector<Point2f>, Evaluate, Answer);
+};

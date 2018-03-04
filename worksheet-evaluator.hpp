@@ -12,6 +12,8 @@
 #include "marker-finder.hpp"
 #include "aligner.hpp"
 #include "workspace-view.hpp"
+#include "evaluator.hpp"
+#include "feedback-generator.hpp"
 
 using namespace cv;
 
@@ -22,6 +24,14 @@ private:
     MarkerFinder markerFinder;
     Aligner aligner;
     WorkspaceView workspaceView;
+    Evaluator evaluator;
+    FeedbackGenerator feedbackGenerator;
+    
+    void evaluateNewRects();
+    void drawResults(Mat, vector<VisibleEvaluate>);
+    
+    int getAnswerIndexForId(int);
+    int getEvaluateIndexForId(int);
 public:
     WorksheetEvaluator(string);
     void addFrame(Mat frame);

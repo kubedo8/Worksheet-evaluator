@@ -46,7 +46,7 @@ public:
 
 class Evaluate{
 public:
-    int id;
+    int evaluateId;
     Rect rect;
     
     Evaluate(int, Rect);
@@ -54,9 +54,23 @@ public:
 
 class EvaluateNumber: public Evaluate {
 public:
-    int answer;
+    long long answer;
     
-    EvaluateNumber(int, Rect, int);
+    EvaluateNumber(int, Rect, long long);
+};
+
+class Answer{
+public:
+    int evaluateId;
+    
+    Answer(int);
+};
+
+class AnswerNumber: public Answer{
+public:
+    long long prediction;
+    
+    AnswerNumber(int, long long);
 };
 
 class EvaluateRect{
@@ -80,6 +94,7 @@ private:
     Mat worksheet;
     vector<MarkerInfo> markersInfo;
     vector<Evaluate> evaluateRects;
+    string trainDigitsPath;
     
     Mat cropWorksheetByPoints(Point2f[4]);
     void initMarkers(FileStorage, double);
@@ -89,4 +104,5 @@ public:
     Mat getWorksheet();
     vector<MarkerInfo> getMarkersInfo();
     vector<Evaluate> gerEvaluateRects();
+    string getTrainDigitsPath();
 };
