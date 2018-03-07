@@ -16,9 +16,6 @@
 using namespace cv;
 using namespace cv::ml;
 
-const int DIGIT_SIZE = 25;
-const int DIGIT_MARGIN = 3;
-
 class Answer{
     public:
     int evaluateId;
@@ -42,6 +39,10 @@ private:
     HOGDescriptor hog;
     
     vector<Answer> answers;
+    
+    int digitSize;
+    
+    int digitMargin;
     
     Mat deskew(Mat);
     

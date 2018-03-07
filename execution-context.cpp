@@ -31,10 +31,15 @@ EvaluateNumber::EvaluateNumber(int evaluateId, Rect rect, long long answer): Eva
     EvaluateNumber::answer = answer;
 }
 
-ExecutionContext::ExecutionContext(string modelPath){
+DigitTrainData::DigitTrainData(string trainPath, int digitSize, int digitMargin){
+    DigitTrainData::trainPath = trainPath;
+    DigitTrainData::digitSize = digitSize;
+    DigitTrainData::digitMargin = digitMargin;
+}
+
+ExecutionContext::ExecutionContext(string imagePath, string modelPath){
     FileStorage fs(modelPath, FileStorage::READ);
     
-    string imagePath = fs["imagePath"];
     worksheet = imread(imagePath);
     double scale = worksheet.rows / 1000.0;
     resize(worksheet, worksheet, Size(worksheet.cols / scale, worksheet.rows / scale));
@@ -118,8 +123,8 @@ void ExecutionContext::initEvaluateRects(FileStorage fs, double scale){
     }
 }
 
-string ExecutionContext::getTrainDigitsPath(){
-    return trainDigitsPath;
+DigitTrainData ExecutionContext::loadDigitTrainData(){
+    return DigitTrainData(TRAIN_DIGITS_PATH, 25, 3);
 }
 
 Mat ExecutionContext::getWorksheet(){

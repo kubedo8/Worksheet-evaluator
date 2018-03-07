@@ -11,7 +11,7 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/highgui.hpp"
 
-WorksheetEvaluator::WorksheetEvaluator(string modelPath): executionContext(modelPath), markerFinder(executionContext), aligner(executionContext), workspaceView(executionContext), evaluator(executionContext), feedbackGenerator(executionContext){
+WorksheetEvaluator::WorksheetEvaluator(string imagePath, string modelPath): executionContext(imagePath, modelPath), markerFinder(executionContext), aligner(executionContext), workspaceView(executionContext), evaluator(executionContext), feedbackGenerator(executionContext){
 }
 
 void WorksheetEvaluator::addFrame(Mat frame){

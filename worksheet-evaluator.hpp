@@ -33,6 +33,6 @@ private:
     int getAnswerIndexForId(int);
     int getEvaluateIndexForId(int);
 public:
-    WorksheetEvaluator(string);
+    WorksheetEvaluator(string, string);
     void addFrame(Mat frame);
 };

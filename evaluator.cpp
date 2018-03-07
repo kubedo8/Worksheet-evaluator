@@ -23,8 +23,11 @@ AnswerNumber::AnswerNumber(int evaluateId, long long prediction): Answer(evaluat
 
 Evaluator::Evaluator(ExecutionContext executionContext): executionContext(executionContext){
     Evaluator::executionContext = executionContext;
-    Evaluator::svm = Algorithm::load<SVM>(executionContext.getTrainDigitsPath());
-    Evaluator::hog = HOGDescriptor(Size(DIGIT_SIZE, DIGIT_SIZE), //winSize
+    DigitTrainData data = executionContext.loadDigitTrainData();
+    Evaluator::svm = Algorithm::load<SVM>(data.trainPath);
+    Evaluator::digitSize = data.digitSize;
+    Evaluator::digitMargin = data.digitMargin;
+    Evaluator::hog = HOGDescriptor(Size(digitSize, digitSize), //winSize
                                    Size(10,10), //blocksize
                                    Size(5,5), //blockStride,
                                    Size(10,10), //cellSize,
@@ -47,7 +50,7 @@ Mat Evaluator::deskew(Mat image){
     // Calculate skew based on central momemts.
     double skew = m.mu11/m.mu02;
     // Calculate affine transform to correct skewness.
-    Mat warpMat = (Mat_<double>(2,3) << 1, skew, -0.5*DIGIT_SIZE*skew, 0, 1 , 0);
+    Mat warpMat = (Mat_<double>(2,3) << 1, skew, -0.5*digitSize*skew, 0, 1 , 0);
     
     Mat imgOut = Mat::zeros(image.rows, image.cols, image.type());
     warpAffine(image, imgOut, warpMat, imgOut.size(),WARP_INVERSE_MAP|INTER_LINEAR);
@@ -83,7 +86,7 @@ vector<Mat> Evaluator::splitImageByDigits(Mat image){
     for (int i = 0; i < goodRects.size(); i++) {
         Rect rect = goodRects[i];
         int maxCoord = max(rect.width, rect.height);
-        int plusRegion = (maxCoord / (DIGIT_SIZE - 2 * DIGIT_MARGIN)) * DIGIT_MARGIN; // plus region around digit
+        int plusRegion = (maxCoord / (digitSize - 2 * digitMargin)) * digitMargin; // plus region around digit
         maxCoord += 2 * plusRegion;
         
         Mat digit(maxCoord, maxCoord, threshold.type());
@@ -93,7 +96,7 @@ vector<Mat> Evaluator::splitImageByDigits(Mat image){
         originalDigitRoi.copyTo(digit(Rect((maxCoord - rect.width) / 2, (maxCoord - rect.height) / 2, rect.width, rect.height)));
         
         Mat digitScaled;
-        resize(digit, digitScaled, Size(DIGIT_SIZE, DIGIT_SIZE));
+        resize(digit, digitScaled, Size(digitSize, digitSize));
         
         digits.push_back(deskew(digitScaled));
     }

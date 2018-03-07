@@ -18,6 +18,8 @@ using namespace cv;
 using namespace cv::xfeatures2d;
 using namespace std;
 
+const string TRAIN_DIGITS_PATH = "/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/data/train_digits.yml";
+
 class MarkerInfo {
 public:
     int id;
@@ -43,6 +45,15 @@ public:
     EvaluateNumber(int, Rect, long long);
 };
 
+class DigitTrainData{
+    public:
+    string trainPath;
+    int digitSize;
+    int digitMargin;
+    
+    DigitTrainData(string, int, int);
+};
+
 class ExecutionContext{
 private:
     Mat worksheet;
@@ -54,9 +65,10 @@ private:
     void initMarkers(FileStorage, double);
     void initEvaluateRects(FileStorage, double);
 public:
-    ExecutionContext(string);
+    ExecutionContext(string, string);
     Mat getWorksheet();
     vector<MarkerInfo> getMarkersInfo();
     vector<Evaluate> gerEvaluateRects();
-    string getTrainDigitsPath();
+    DigitTrainData loadDigitTrainData();
+    
 };

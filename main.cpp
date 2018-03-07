@@ -53,7 +53,8 @@ void processImage(WorksheetEvaluator we){
 }
 
 int main(int argc, const char * argv[]) {
-    WorksheetEvaluator we("/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/data/model101.yml");
+    WorksheetEvaluator we("/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/data/original.jpg",
+                          "/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/data/model101.yml");
     
     //processVideo(we);
     processImage(we);
