@@ -13,12 +13,14 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 
-Answer::Answer(int evaluateId){
-    Answer::evaluateId = evaluateId;
+Answer::Answer(){
 }
 
-AnswerNumber::AnswerNumber(int evaluateId, long long prediction): Answer(evaluateId){
-    AnswerNumber::prediction = prediction;
+AnswerNumber::AnswerNumber(){
+}
+
+string AnswerNumber::type(){
+    return "number";
 }
 
 Evaluator::Evaluator(ExecutionContext executionContext): executionContext(executionContext){
@@ -108,8 +110,8 @@ void Evaluator::predictNumber(int evaluateId, Mat image){
     vector<Mat> split = splitImageByDigits(image);
     if(split.size() == 0) return;
     
-    long long result = 0;
-    long long base = (long long) pow(10,split.size() - 1);
+    long result = 0;
+    long base = (long) pow(10,split.size() - 1);
     for(int i = 0; i < split.size(); i++){
         vector<float> descriptors;
         hog.compute(split[i],descriptors);
@@ -124,24 +126,30 @@ void Evaluator::predictNumber(int evaluateId, Mat image){
         base /= 10;
     }
     
-    int answerIndex = getAnswerIndexForId(evaluateId);
-    if(answerIndex == -1){
-        answers.push_back(AnswerNumber(evaluateId, result));
+    Answer* answer = getAnswerForId(evaluateId);
+    if(answer != NULL){
+        AnswerNumber* answerNumber = dynamic_cast<AnswerNumber*>(answer);
+        if(answerNumber != NULL){
+            answerNumber->prediction = result;
+        }
     }else{
-        AnswerNumber* answerNumber = static_cast<AnswerNumber*>(&answers[answerIndex]);
-        answerNumber->prediction = result;
+        AnswerNumber* newAnswerNumber = new AnswerNumber();
+        newAnswerNumber->evaluateId = evaluateId;
+        newAnswerNumber->prediction = result;
+        answers.push_back(newAnswerNumber);
     }
+    
 }
 
-int Evaluator::getAnswerIndexForId(int evaluateId){
+Answer* Evaluator::getAnswerForId(int evaluateId){
     for (int i = 0; i < answers.size(); i++) {
-        if(answers[i].evaluateId == evaluateId){
-            return i;
+        if(answers[i]->evaluateId == evaluateId){
+            return answers[i];
         }
     }
-    return -1;
+    return NULL;
 }
 
-vector<Answer> Evaluator::getAnswers(){
+vector<Answer*> Evaluator::getAnswers(){
     return answers;
 }

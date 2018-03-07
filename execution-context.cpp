@@ -22,13 +22,14 @@ MarkerInfo::MarkerInfo(int id, Point2f points[4], vector<KeyPoint> keyPoints, Ma
     MarkerInfo::descriptor = descriptor;
 }
 
-Evaluate::Evaluate(int evaluateId, Rect rect){
-    Evaluate::evaluateId = evaluateId;
-    Evaluate::rect = rect;
+Evaluate::Evaluate(){
 }
 
-EvaluateNumber::EvaluateNumber(int evaluateId, Rect rect, long long answer): Evaluate(evaluateId, rect){
-    EvaluateNumber::answer = answer;
+EvaluateNumber::EvaluateNumber(){
+}
+
+string EvaluateNumber::type(){
+    return "number";
 }
 
 DigitTrainData::DigitTrainData(string trainPath, int digitSize, int digitMargin){
@@ -117,7 +118,11 @@ void ExecutionContext::initEvaluateRects(FileStorage fs, double scale){
         rect.height = (coords[3] / scale) - rect.y;
         
         if (type == "number"){
-            EvaluateNumber evalRect = EvaluateNumber(id, rect, answer);
+            EvaluateNumber* evalRect = new EvaluateNumber();
+            evalRect->evaluateId = id;
+            evalRect->answer = answer;
+            evalRect->rect = rect;
+        
             evaluateRects.push_back(evalRect);
         }
     }
@@ -135,7 +140,7 @@ vector<MarkerInfo> ExecutionContext::getMarkersInfo(){
     return markersInfo;
 }
 
-vector<Evaluate> ExecutionContext::gerEvaluateRects(){
+vector<Evaluate*> ExecutionContext::gerEvaluateRects(){
     return evaluateRects;
 }
 

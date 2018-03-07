@@ -30,8 +30,8 @@ private:
     void evaluateNewRects();
     void drawResults(Mat, vector<VisibleEvaluate>);
     
-    int getAnswerIndexForId(int);
-    int getEvaluateIndexForId(int);
+    Answer* getAnswerForId(int);
+    Evaluate* getEvaluateForId(int);
 public:
     WorksheetEvaluator(string, string);
     void addFrame(Mat frame);

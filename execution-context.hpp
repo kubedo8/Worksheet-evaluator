@@ -35,14 +35,18 @@ public:
     int evaluateId;
     Rect rect;
     
-    Evaluate(int, Rect);
+    virtual string type() = 0;
+    
+    Evaluate();
 };
 
 class EvaluateNumber: public Evaluate {
 public:
-    long long answer;
+    long answer;
     
-    EvaluateNumber(int, Rect, long long);
+    string type();
+    
+    EvaluateNumber();
 };
 
 class DigitTrainData{
@@ -58,7 +62,7 @@ class ExecutionContext{
 private:
     Mat worksheet;
     vector<MarkerInfo> markersInfo;
-    vector<Evaluate> evaluateRects;
+    vector<Evaluate*> evaluateRects;
     string trainDigitsPath;
     
     Mat cropWorksheetByPoints(Point2f[4]);
@@ -68,7 +72,7 @@ public:
     ExecutionContext(string, string);
     Mat getWorksheet();
     vector<MarkerInfo> getMarkersInfo();
-    vector<Evaluate> gerEvaluateRects();
+    vector<Evaluate*> gerEvaluateRects();
     DigitTrainData loadDigitTrainData();
     
 };

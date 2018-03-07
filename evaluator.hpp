@@ -20,14 +20,18 @@ class Answer{
     public:
     int evaluateId;
     
-    Answer(int);
+    virtual string type() = 0;
+    
+    Answer();
 };
 
 class AnswerNumber: public Answer{
     public:
-    long long prediction;
+    long prediction;
     
-    AnswerNumber(int, long long);
+    string type();
+    
+    AnswerNumber();
 };
 
 class Evaluator{
@@ -38,7 +42,7 @@ private:
     
     HOGDescriptor hog;
     
-    vector<Answer> answers;
+    vector<Answer*> answers;
     
     int digitSize;
     
@@ -50,12 +54,12 @@ private:
     
     bool isValidDigitRect(Rect);
     
-    int getAnswerIndexForId(int);
+    Answer* getAnswerForId(int);
     
 public:
     Evaluator(ExecutionContext);
     
     void predictNumber(int, Mat);
     
-    vector<Answer> getAnswers();
+    vector<Answer*> getAnswers();
 };

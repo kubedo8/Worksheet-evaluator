@@ -18,9 +18,9 @@ Scalar FeedbackGenerator::getColorForAnswerType(int answerType){
     if(answerType == -1){
         return Scalar(255,0,0);
     }else if (answerType == 0){
-        return Scalar(0,255,0);
-    }else{
         return Scalar(0,0,255);
+    }else{
+        return Scalar(0,255,0);
     }
 }
 
@@ -30,17 +30,15 @@ void FeedbackGenerator::drawLines(Mat frame, vector<Point2f> points, Scalar colo
     }
 }
 
-void FeedbackGenerator::drawResult(Mat frame, vector<Point2f> points, Evaluate evaluate, Answer answer){
-    EvaluateNumber* evaluateNumber = static_cast<EvaluateNumber*>(&evaluate);
-    AnswerNumber* answerNumber = static_cast<AnswerNumber*>(&answer);
+void FeedbackGenerator::drawResult(Mat frame, vector<Point2f> points, Evaluate* evaluate, Answer* answer){
+    EvaluateNumber* evaluateNumber = dynamic_cast<EvaluateNumber*>(evaluate);
+    AnswerNumber* answerNumber = dynamic_cast<AnswerNumber*>(answer);
     
-    Scalar color;
+    int answerType = -1;
     if(evaluateNumber != NULL && answerNumber != NULL){
-        color = getColorForAnswerType(evaluateNumber->answer == answerNumber->prediction);
-    }else{
-        color = getColorForAnswerType(-1);
+        answerType = evaluateNumber->answer == answerNumber->prediction;
     }
-    
+    Scalar color = getColorForAnswerType(answerType);
     drawLines(frame, points, color);
 }
 

@@ -26,13 +26,13 @@ WorkspaceView::WorkspaceView(ExecutionContext executionContext): executionContex
 }
 
 vector<VisibleEvaluate> WorkspaceView::addFrame(Mat frame, Mat homography){
-    vector<Evaluate> evaluateRects = executionContext.gerEvaluateRects();
+    vector<Evaluate*> evaluateRects = executionContext.gerEvaluateRects();
     double scale = max(1.0, (frame.rows * 1.0) / (executionContext.getWorksheet().rows * 1.0));
     
     vector<VisibleEvaluate> visibleEvaluates;
     
     for (int i = 0; i < evaluateRects.size(); i++) {
-        Rect rect = evaluateRects[i].rect;
+        Rect rect = (*evaluateRects[i]).rect;
         
         vector<Point2f> rectCorners = getRectCorners(rect);
         vector<Point2f> computedCorners(4);
@@ -43,7 +43,7 @@ vector<VisibleEvaluate> WorkspaceView::addFrame(Mat frame, Mat homography){
             continue;
         }
         
-        visibleEvaluates.push_back(VisibleEvaluate(evaluateRects[i].evaluateId, computedCorners));
+        visibleEvaluates.push_back(VisibleEvaluate(evaluateRects[i]->evaluateId, computedCorners));
         
         Size2f cropSize = Size2f(rect.width * scale, rect.height * scale);
         
@@ -58,7 +58,7 @@ vector<VisibleEvaluate> WorkspaceView::addFrame(Mat frame, Mat homography){
         Mat cropped;
         warpPerspective(frame, cropped, perspectiveTransform, cropSize);
         
-        processRect(evaluateRects[i].evaluateId, cropped);
+        processRect(evaluateRects[i]->evaluateId, cropped);
     }
     
     return visibleEvaluates;

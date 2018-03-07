@@ -23,7 +23,7 @@ void processVideo(WorksheetEvaluator we){
     int fps = vc.get(CV_CAP_PROP_FPS);
     int ex = static_cast<int>(vc.get(CV_CAP_PROP_FOURCC));
     
-    VideoWriter vw("/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/debug/video_result.mp4", ex, fps, Size(dHeight, dWidth), true);
+    VideoWriter vw("/Users/jakub/Documents/thesis/Test evaluator/Test evaluator/debug/video_result_full.mp4", ex, fps, Size(dHeight, dWidth), true);
     
     while (true) {
         Mat frame;

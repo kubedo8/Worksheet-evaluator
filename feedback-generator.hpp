@@ -21,5 +21,5 @@ private:
 public:
     FeedbackGenerator(ExecutionContext);
     
-    void drawResult(Mat, vector<Point2f>, Evaluate, Answer);
+    void drawResult(Mat, vector<Point2f>, Evaluate*, Answer*);
 };

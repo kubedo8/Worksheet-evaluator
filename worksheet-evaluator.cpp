@@ -37,44 +37,40 @@ void WorksheetEvaluator::addFrame(Mat frame){
 void WorksheetEvaluator::evaluateNewRects(){
     vector<EvaluateRect> newRects = workspaceView.getNewRects();
     for (int i = 0; i < newRects.size(); i++) {
-        int evaluateIndex = getEvaluateIndexForId(newRects[i].evaluateId);
-        if (evaluateIndex == -1){
-            continue;
-        }
-        Evaluate evaluate = executionContext.gerEvaluateRects()[evaluateIndex];
-        EvaluateNumber* evaluateNumber = static_cast<EvaluateNumber*>(&evaluate);
-        if (evaluateNumber != NULL){
-            evaluator.predictNumber(evaluateNumber->evaluateId, newRects[i].rectMatrix);
+        Evaluate* evaluate = getEvaluateForId(newRects[i].evaluateId);
+        if(dynamic_cast<EvaluateNumber*>(evaluate)){
+            evaluator.predictNumber(evaluate->evaluateId, newRects[i].rectMatrix);
         }
     }
 }
+
 void WorksheetEvaluator::drawResults(Mat frame, vector<VisibleEvaluate> visibles){
     for (int i = 0; i < visibles.size(); i++) {
         VisibleEvaluate visible = visibles[i];
-        int evaluateIndex = getEvaluateIndexForId(visible.evaluateId);
-        int answerIndex = getAnswerIndexForId(visible.evaluateId);
-        if(evaluateIndex != -1 && answerIndex != -1){
-            feedbackGenerator.drawResult(frame, visible.points, executionContext.gerEvaluateRects()[evaluateIndex], evaluator.getAnswers()[answerIndex]);
+        Evaluate* evaluate = getEvaluateForId(visible.evaluateId);
+        Answer* answer = getAnswerForId(visible.evaluateId);
+        if(evaluate != NULL && answer != NULL){
+            feedbackGenerator.drawResult(frame, visible.points, evaluate, answer);
         }
     }
 }
 
-int WorksheetEvaluator::getAnswerIndexForId(int id){
-    vector<Answer> answers = evaluator.getAnswers();
+Answer* WorksheetEvaluator::getAnswerForId(int id){
+    vector<Answer*> answers = evaluator.getAnswers();
     for (int i = 0; i < answers.size(); i++) {
-        if (answers[i].evaluateId == id){
-            return i;
+        if (answers[i]->evaluateId == id){
+            return answers[i];
         }
     }
-    return -1;
+    return NULL;
 }
 
-int WorksheetEvaluator::getEvaluateIndexForId(int id){
-    vector<Evaluate> evaluates = executionContext.gerEvaluateRects();
+Evaluate* WorksheetEvaluator::getEvaluateForId(int id){
+    vector<Evaluate*> evaluates = executionContext.gerEvaluateRects();
     for (int i = 0; i < evaluates.size(); i++) {
-        if (evaluates[i].evaluateId == id){
-            return i;
+        if (evaluates[i]->evaluateId == id){
+            return evaluates[i];
         }
     }
-    return -1;
+    return NULL;
 }
