@@ -12,14 +12,26 @@
 
 #include "opencv2/ml.hpp"
 #include "opencv2/objdetect.hpp"
-#include <stdio.h>
 
 using namespace cv;
-using namespace std;
 using namespace cv::ml;
 
 const int DIGIT_SIZE = 25;
 const int DIGIT_MARGIN = 3;
+
+class Answer{
+    public:
+    int evaluateId;
+    
+    Answer(int);
+};
+
+class AnswerNumber: public Answer{
+    public:
+    long long prediction;
+    
+    AnswerNumber(int, long long);
+};
 
 class Evaluator{
 private:

@@ -13,6 +13,14 @@
 #include "opencv2/highgui.hpp"
 #include "opencv2/imgproc.hpp"
 
+Answer::Answer(int evaluateId){
+    Answer::evaluateId = evaluateId;
+}
+
+AnswerNumber::AnswerNumber(int evaluateId, long long prediction): Answer(evaluateId){
+    AnswerNumber::prediction = prediction;
+}
+
 Evaluator::Evaluator(ExecutionContext executionContext): executionContext(executionContext){
     Evaluator::executionContext = executionContext;
     Evaluator::svm = Algorithm::load<SVM>(executionContext.getTrainDigitsPath());

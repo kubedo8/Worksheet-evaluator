@@ -26,16 +26,6 @@ MarkerInfo::MarkerInfo(int id, Point2f points[4], vector<KeyPoint> keyPoints, Ma
     MarkerInfo::descriptor = descriptor;
 }
 
-RelatedPoint::RelatedPoint(Point2f p1, Point2f p2){
-    RelatedPoint::original = p1;
-    RelatedPoint::computed = p2;
-}
-
-MarkerRelatedPoints::MarkerRelatedPoints(int markerId, vector<RelatedPoint> points){
-    MarkerRelatedPoints::markerId = markerId;
-    MarkerRelatedPoints::points = points;
-}
-
 Evaluate::Evaluate(int evaluateId, Rect rect){
     Evaluate::evaluateId = evaluateId;
     Evaluate::rect = rect;
@@ -43,24 +33,6 @@ Evaluate::Evaluate(int evaluateId, Rect rect){
 
 EvaluateNumber::EvaluateNumber(int evaluateId, Rect rect, long long answer): Evaluate(evaluateId, rect){
     EvaluateNumber::answer = answer;
-}
-
-EvaluateRect::EvaluateRect(int evaluateId, Mat rectMatrix){
-    EvaluateRect::evaluateId = evaluateId;
-    EvaluateRect::rectMatrix = rectMatrix;
-}
-
-Answer::Answer(int evaluateId){
-    Answer::evaluateId = evaluateId;
-}
-
-AnswerNumber::AnswerNumber(int evaluateId, long long prediction): Answer(evaluateId){
-    AnswerNumber::prediction = prediction;
-}
-
-VisibleEvaluate::VisibleEvaluate(int evaluateId, vector<Point2f> points){
-    VisibleEvaluate::evaluateId = evaluateId;
-    VisibleEvaluate::points = points;
 }
 
 ExecutionContext::ExecutionContext(string modelPath){

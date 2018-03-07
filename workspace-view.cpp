@@ -10,9 +10,16 @@
 
 #include "opencv2/imgproc.hpp"
 #include "opencv2/highgui.hpp"
-#include <iostream>
 
-using namespace std;
+EvaluateRect::EvaluateRect(int evaluateId, Mat rectMatrix){
+    EvaluateRect::evaluateId = evaluateId;
+    EvaluateRect::rectMatrix = rectMatrix;
+}
+
+VisibleEvaluate::VisibleEvaluate(int evaluateId, vector<Point2f> points){
+    VisibleEvaluate::evaluateId = evaluateId;
+    VisibleEvaluate::points = points;
+}
 
 WorkspaceView::WorkspaceView(ExecutionContext executionContext): executionContext(executionContext){
     WorkspaceView::executionContext = executionContext;

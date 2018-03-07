@@ -16,6 +16,22 @@ using namespace std;
 
 const double RATIO = 0.8;
 
+class EvaluateRect{
+    public:
+    int evaluateId;
+    Mat rectMatrix;
+    
+    EvaluateRect(int, Mat);
+};
+
+class VisibleEvaluate{
+    public:
+    int evaluateId;
+    vector<Point2f> points;
+    
+    VisibleEvaluate(int, vector<Point2f>);
+};
+
 class WorkspaceView{
 private:
     ExecutionContext executionContext;

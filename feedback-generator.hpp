@@ -9,6 +9,7 @@
 #pragma once
 
 #include "execution-context.hpp"
+#include "evaluator.hpp"
 
 class FeedbackGenerator{
 private:

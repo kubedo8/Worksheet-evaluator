@@ -19,6 +19,22 @@ const double MIN_MARKER_SIZE = 50.0;
 const double MIN_RECTANGLE_ANGLE = 75.0;
 const double MAX_RECTANGLE_ANGLE = 105.0;
 
+class RelatedPoint{
+    public:
+    Point2f original;
+    Point2f computed;
+    
+    RelatedPoint(Point2f, Point2f);
+};
+
+class MarkerRelatedPoints{
+    public:
+    int markerId;
+    vector<RelatedPoint> points;
+    
+    MarkerRelatedPoints(int, vector<RelatedPoint>);
+};
+
 class MarkerFinder {
 private:
     ExecutionContext executionContext;

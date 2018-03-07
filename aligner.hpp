@@ -9,6 +9,7 @@
 #pragma once
 
 #include "execution-context.hpp"
+#include "marker-finder.hpp"
 
 #include <stdio.h>
 

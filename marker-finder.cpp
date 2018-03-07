@@ -12,9 +12,16 @@
 #include "opencv2/xfeatures2d.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/calib3d.hpp"
-#include <iostream>
 
-using namespace std;
+RelatedPoint::RelatedPoint(Point2f p1, Point2f p2){
+    RelatedPoint::original = p1;
+    RelatedPoint::computed = p2;
+}
+
+MarkerRelatedPoints::MarkerRelatedPoints(int markerId, vector<RelatedPoint> points){
+    MarkerRelatedPoints::markerId = markerId;
+    MarkerRelatedPoints::points = points;
+}
 
 MarkerFinder::MarkerFinder(ExecutionContext executionContext): executionContext(executionContext){
     MarkerFinder::executionContext = executionContext;

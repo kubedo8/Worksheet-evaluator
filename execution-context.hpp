@@ -28,22 +28,6 @@ public:
     MarkerInfo(int, Point2f[4], vector<KeyPoint>, Mat);
 };
 
-class RelatedPoint{
-public:
-    Point2f original;
-    Point2f computed;
-    
-    RelatedPoint(Point2f, Point2f);
-};
-
-class MarkerRelatedPoints{
-public:
-    int markerId;
-    vector<RelatedPoint> points;
-    
-    MarkerRelatedPoints(int, vector<RelatedPoint>);
-};
-
 class Evaluate{
 public:
     int evaluateId;
@@ -57,36 +41,6 @@ public:
     long long answer;
     
     EvaluateNumber(int, Rect, long long);
-};
-
-class Answer{
-public:
-    int evaluateId;
-    
-    Answer(int);
-};
-
-class AnswerNumber: public Answer{
-public:
-    long long prediction;
-    
-    AnswerNumber(int, long long);
-};
-
-class EvaluateRect{
-public:
-    int evaluateId;
-    Mat rectMatrix;
-    
-    EvaluateRect(int, Mat);
-};
-
-class VisibleEvaluate{
-public:
-    int evaluateId;
-    vector<Point2f> points;
-    
-    VisibleEvaluate(int, vector<Point2f>);
 };
 
 class ExecutionContext{
