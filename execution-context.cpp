@@ -8,14 +8,10 @@
 
 #include "execution-context.hpp"
 
-#include <iostream>
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
 #include "opencv2/xfeatures2d.hpp"
 #include "opencv2/highgui.hpp"
-
-using namespace cv;
-using namespace std;
 
 MarkerInfo::MarkerInfo(int id, Point2f points[4], vector<KeyPoint> keyPoints, Mat descriptor){
     MarkerInfo::id = id;

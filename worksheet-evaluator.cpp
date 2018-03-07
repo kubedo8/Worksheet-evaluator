@@ -11,10 +11,6 @@
 #include "opencv2/imgproc.hpp"
 #include "opencv2/highgui.hpp"
 
-#include <iostream>
-
-using namespace std;
-
 WorksheetEvaluator::WorksheetEvaluator(string modelPath): executionContext(modelPath), markerFinder(executionContext), aligner(executionContext), workspaceView(executionContext), evaluator(executionContext), feedbackGenerator(executionContext){
 }
 
